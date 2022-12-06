@@ -11,7 +11,7 @@ import { useState } from "react";
 
 const collectionRef = collection(db, "wish_list");
 
-const WishList = () => {
+const WishList = ({ wishListFromDB }) => {
 	const [wish, setWish] = useState("");
 	const [value, loading, error] = useCollection(
 		query(collectionRef, orderBy("timestamp", "desc"))
@@ -46,11 +46,15 @@ const WishList = () => {
 					{loading && <span>Loading...</span>}
 					{error && <span>Error accured, try again later</span>}
 
-					{value?.docs
+					{/* {value?.docs
 						.map((doc) => doc?.data())
 						?.map((wish, i) => (
 							<li key={i}>{wish.wish}</li>
-						))}
+						))} */}
+
+					{wishListFromDB?.map((wish) => (
+						<li key={wish.id}>{wish.wish}</li>
+					))}
 				</ol>
 			</div>
 		</div>

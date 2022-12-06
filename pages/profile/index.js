@@ -4,8 +4,10 @@ import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import WishList from "../../components/WishList";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase.config";
 
-const ProfilePage = () => {
+const ProfilePage = ({ wishListFromDB }) => {
 	const { currentUser, signoutFun } = AuthContext();
 	const { replace } = useRouter();
 
@@ -45,9 +47,23 @@ const ProfilePage = () => {
 				Sign out
 			</button>
 
-			<WishList />
+			<WishList wishListFromDB={wishListFromDB} />
 		</div>
 	);
 };
 
 export default ProfilePage;
+
+export const getStaticProps = async (ctx) => {
+	const collectionRef = collection(db, "wish_list");
+	const wishListFromDB = await getDocs(
+		query(collectionRef, orderBy("timestamp", "desc"))
+	);
+
+	return {
+		props: wishListFromDB.docs.map((doc) => ({
+			id: doc.id,
+			...doc.data(),
+		})),
+	};
+};
