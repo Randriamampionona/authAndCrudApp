@@ -4,7 +4,7 @@ import { AuthContext } from "../../store/AuthContext";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import WishList from "../../components/WishList";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebase.config";
 
 const ProfilePage = ({ wishListFromDB }) => {
@@ -54,7 +54,7 @@ const ProfilePage = ({ wishListFromDB }) => {
 
 export default ProfilePage;
 
-export const getStaticProps = async (ctx) => {
+export const getStaticProps = async () => {
 	const collectionRef = collection(db, "wish_list");
 	const wishListFromDB = await getDocs(
 		query(collectionRef, orderBy("timestamp", "desc"))
